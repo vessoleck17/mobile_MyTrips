@@ -1,7 +1,7 @@
 package br.senai.sp.jandira.mytrips.screens
 
-import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -9,18 +9,26 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.LocationOn
+import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.Card
+import androidx.compose.material3.CardColors
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
@@ -31,21 +39,28 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.em
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import br.senai.sp.jandira.mytrips.R
-import br.senai.sp.jandira.mytrips.ui.theme.MyTripsTheme
+import br.senai.sp.jandira.mytrips.repository.CategoriaRepository
+import br.senai.sp.jandira.mytrips.repository.ViagemRepository
+import br.senai.sp.jandira.mytrips.reduzirData
+
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TelaHome(controleDeNavegacao: NavHostController) {
+
+    val viagens = ViagemRepository().listarTodasAsViagens()
+    val categorias = CategoriaRepository().listarTodasAsCategorias()
 
     var pesquisaState = remember {
         mutableStateOf("")
@@ -54,282 +69,229 @@ fun TelaHome(controleDeNavegacao: NavHostController) {
     Column {
         Surface (
             modifier = Modifier
-                .height(300.dp)
+                .height(200.dp)
         ){
             Image(
                 painter = painterResource(id = R.drawable.destaque),
-                contentDescription = "",
+                contentDescription = "Paris",
                 contentScale = ContentScale.Crop,
                 modifier = Modifier
                     .fillMaxSize()
-
             )
-            Column(
-                horizontalAlignment = Alignment.End,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(15.dp)
-            ) {
+
+            Column {
                 Image(
                     painter = painterResource(id = R.drawable.susana),
-                    contentDescription = "",
+                    contentDescription = "Perfil",
                     modifier = Modifier
-                        .size(70.dp)
+                        .width(61.dp)
+                        .height(61.dp)
+                        .offset(x = 315.dp, y = 13.dp)
                 )
 
                 Text(
                     text = "Susanna Hoffs",
                     color = Color.White,
+                    fontSize = 14.sp,
+                    fontWeight = FontWeight.Light,
                     modifier = Modifier
-                        .padding(5.dp)
-                )
-            }
-            Column (
-                verticalArrangement = Arrangement.Bottom,
-                modifier = Modifier
-                    .padding(15.dp)
-            ){
-                Row {
-                    Icon(
-                        imageVector = Icons.Default.LocationOn ,
-                        contentDescription = "",
-                        tint = Color.White
+                        .offset(x = 290.dp, y = 18.dp)
 
-                    )
-                    Text(
-                        text = "You're in Paris",
-                        fontSize = 20.sp,
-                        color = Color.White
-                    )
-                }
+
+                )
+
+                Icon(
+                    imageVector = Icons.Filled.LocationOn,
+                    contentDescription = "", tint = Color.White,
+                    modifier = Modifier
+                        .offset(x = 0.dp, y = 64.dp)
+                )
+
+                Text(
+                    text = "You're in Paris",
+                    color = Color.White,
+                    modifier = Modifier
+                        .offset(x = 25.dp, y = 42.dp)
+                )
+
                 Text(
                     text = "My Trips",
-                    fontSize = 33.sp,
-                    fontWeight = FontWeight.W900,
-                    color = Color.White
+                    color = Color.White,
+                    fontSize = 24.sp,
+                    fontWeight = FontWeight.ExtraBold,
+                    modifier = Modifier
+                        .offset(x = 20.dp, y = 38.dp)
                 )
-
             }
         }
 
-        Column(
-            modifier = Modifier
-                .padding(top = 14.dp, start = 20.dp, end = 20.dp, bottom = 14.dp)
-        ) {
-            Text(text = "Categories")
-            Spacer(modifier = Modifier.height(8.dp))
-            LazyRow{
-                items(3){
-                    Card(
-                        elevation = CardDefaults.cardElevation(10.dp),
-                        colors = CardDefaults.cardColors(containerColor = Color(0xFFCF06F0)),
+        Column {
+            Text(
+                text = "Categories",
+                fontWeight = FontWeight.W400,
+                fontSize = 18.sp,
+                color = Color(0xFF565454),
+                modifier = Modifier
+                    .offset(x = 10.dp, y = 10.dp)
+            )
+        }
+        Spacer(modifier = Modifier.height(14.dp))
+
+
+        LazyRow {
+            items(categorias){
+
+                Card (
+
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(90.dp)
+                        .width(140.dp)
+                        .offset(x = 10.dp)
+                        .padding(horizontal = 6.dp),
+                    colors = if (it.habilitado==true) CardDefaults.cardColors(containerColor = Color(0xFFCF06F0))
+                    else CardDefaults.cardColors(containerColor = Color(0xFFEAABF4))
+
+                ) {
+                    Column(
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        verticalArrangement = Arrangement.Center,
                         modifier = Modifier
-                            .height(80.dp)
-                            .width(120.dp)
+                            .padding(8.dp)
+                            .fillMaxSize()
                     ) {
-                        Column(
-                            horizontalAlignment = Alignment.CenterHorizontally,
-                            verticalArrangement = Arrangement.Center,
+                        Image(
+                            painter = if (it.imagem==null) painterResource(id = R.drawable.noimage) else it.imagem!!,
+                            contentDescription = "",
+                            contentScale = ContentScale.Fit,
                             modifier = Modifier
-                                .padding(8.dp)
-                                .fillMaxSize()
-                        ) {
-                            Image(
-                                painter = painterResource(id = R.drawable.montain),
-                                contentDescription = "",
-                                contentScale = ContentScale.Fit,
-                                modifier = Modifier
-                                    .height(40.dp)
-                                    .width(60.dp)
-                            )
-                            Text(
-                                text = "Mountain",
-                                color = Color.White
-                            )
-                        }
+                                .width(60.dp)
+                                .height(45.dp)
+                        )
+                        Text(text = it.nome, color = Color.White)
                     }
-                    Spacer(modifier = Modifier.width(8.dp))
-                    Card(
-                        elevation = CardDefaults.cardElevation(10.dp),
-                        colors = CardDefaults.cardColors(containerColor = Color(0xFFEAABF4)),
-                        modifier = Modifier
-                            .height(80.dp)
-                            .width(120.dp)
-                    ) {
-                        Column(
-                            horizontalAlignment = Alignment.CenterHorizontally,
-                            verticalArrangement = Arrangement.Center,
-                            modifier = Modifier
-                                .padding(8.dp)
-                                .fillMaxSize()
-                        ) {
-                            Image(
-                                painter = painterResource(id = R.drawable.ski),
-                                contentDescription = "",
-                                contentScale = ContentScale.Fit,
-                                modifier = Modifier
-                                    .height(40.dp)
-                                    .width(60.dp)
-                            )
-                            Text(
-                                text = "Snow",
-                                color = Color.White
-                            )
-                        }
-                    }
-                    Spacer(modifier = Modifier.width(8.dp))
-                    Card(
-                        elevation = CardDefaults.cardElevation(10.dp),
-                        colors = CardDefaults.cardColors(containerColor = Color(0xFFEAABF4)),
-                        modifier = Modifier
-                            .height(80.dp)
-                            .width(120.dp)
-                    ) {
-                        Column(
-                            horizontalAlignment = Alignment.CenterHorizontally,
-                            verticalArrangement = Arrangement.Center,
-                            modifier = Modifier
-                                .padding(8.dp)
-                                .fillMaxSize()
-                        ) {
-                            Image(
-                                painter = painterResource(id = R.drawable.beach),
-                                contentDescription = "",
-                                contentScale = ContentScale.Fit,
-                                modifier = Modifier
-                                    .height(40.dp)
-                                    .width(60.dp)
-                            )
-                            Text(
-                                text = "Beach",
-                                color = Color.White
-                            )
-                        }
-                    }
-                    Spacer(modifier = Modifier.width(8.dp))
                 }
             }
-            Spacer(modifier = Modifier.height(20.dp))
-            TextField(
+
+        }
+        Spacer(modifier = Modifier.height(4.dp))
+
+        Card (
+            elevation = CardDefaults.cardElevation(7.dp),
+            shape = RoundedCornerShape(23.dp),
+            colors = CardDefaults.cardColors(containerColor = Color.White),
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(10.dp)
+                .height(70.dp)
+        ) {
+            OutlinedTextField(
                 value = pesquisaState.value,
-                colors = TextFieldDefaults.textFieldColors(containerColor = Color.White),
                 onValueChange = {
                     pesquisaState.value = it
                 },
-                placeholder = { Text(text = "Search your destiny") },
-                trailingIcon = {
-                    Image(
-                        painter = painterResource(id = R.drawable.lupa),
-                        contentDescription = "",
-                        modifier = Modifier
-                            .height(20.dp)
-                            .width(20.dp)
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .offset(y = 7.dp)
+                ,
+                placeholder = {
+                    Text(
+                        text = "Search your destiny",
+                        color = Color(0xFFA09C9C)
                     )
                 },
-                shape = RoundedCornerShape(size = 18.dp),
-                modifier = Modifier.fillMaxWidth()
+                trailingIcon = {
+                    IconButton(onClick = { }) {
+                        Icon(
+                            imageVector = Icons.Default.Search,
+                            contentDescription = "",
+                            tint = Color(0xFFB7B7B7)
+                        )
+
+                    }
+                },
+                colors = OutlinedTextFieldDefaults.colors(unfocusedBorderColor = Color.Transparent, focusedBorderColor = Color.Transparent)
             )
-            Spacer(modifier = Modifier.height(20.dp))
-            Text(text = "Past Trips")
-            Spacer(modifier = Modifier.height(10.dp))
-            LazyColumn() {
-                items(3){
-                    Card(
-                        elevation = CardDefaults.cardElevation(6.dp),
-                        colors = CardDefaults.cardColors(containerColor = Color.White),
+        }
+
+
+        Text(
+            text = "Past Trips",
+            fontSize = 16.sp,
+            color = Color(0xFF565454),
+            modifier = Modifier
+                .offset(x = 12.dp)
+        )
+        Spacer(modifier = Modifier.height(4.dp))
+
+
+
+        LazyColumn{
+
+            items(viagens){
+                Card(
+                    elevation = CardDefaults.cardElevation(6.dp),
+                    colors = CardDefaults.cardColors(Color.White),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(10.dp)
+                ) {
+                    Column(
                         modifier = Modifier
-                            .fillMaxWidth()
-                            .height(200.dp)
-                    ) {
-                        Column(
+                            .fillMaxSize()
+                            .padding(4.dp)
+                    ){
+                        Image(
+
+                            painter = if (it.imagem == null) painterResource(id = R.drawable.noimage)else it.imagem!!,
+                            contentDescription = "",
+                            contentScale = ContentScale.Crop,
                             modifier = Modifier
-                                .fillMaxSize()
-                                .padding(4.dp)
-                        ) {
-                            Image(
-                                painter = painterResource(id = R.drawable.london),
-                                contentDescription = "",
-                                contentScale = ContentScale.Crop,
-                                modifier = Modifier
-                                    .height(100.dp)
-                                    .fillMaxWidth()
-                                    .clip(RoundedCornerShape(8.dp))
-                            )
-                            Spacer(modifier = Modifier.height(5.dp))
-                            Text(
-                                text = "London, 2019",
-                                color = Color(0xFFCF06F0)
-                            )
-                            Spacer(modifier = Modifier.height(5.dp))
-                            Text(
-                                text = "London is the capital and largest city of  the United Kingdom, with a population of just under 9 million.",
-                                color = Color(0xFFA09C9C),
-                                fontSize = 10.sp
-                            )
-                            Spacer(modifier = Modifier.height(5.dp))
-                            Row(
-                                horizontalArrangement = Arrangement.End,
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                            ) {
-                                Text(
-                                    text = "18 Feb - 21 Feb",
-                                    color = Color(0xFFCF06F0),
-                                    fontSize = 10.sp
-                                )
-                            }
-                        }
-                    }
-                    Spacer(modifier = Modifier.height(14.dp))
-                    Card(
-                        elevation = CardDefaults.cardElevation(6.dp),
-                        colors = CardDefaults.cardColors(containerColor = Color.White),
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .height(200.dp)
-                    ) {
-                        Column(
+                                .height(120.dp)
+                                .fillMaxWidth()
+                                .clip(RoundedCornerShape(6.dp))
+                        )
+                        Spacer(modifier = Modifier.height(6.dp))
+
+                        Text(
+                            text =  "${it.destino}, ${it.dataChegada.year}",
+                            color = Color(0xFFCF06F0)
+                        )
+
+                        Spacer(modifier = Modifier.height(6.dp))
+
+
+                        Text(
+                            text = "${it.descricao}",
+                            fontSize = 12.sp,
+                            color = Color(0xFFA09C9C)
+                        )
+
+                        Row (
                             modifier = Modifier
-                                .fillMaxSize()
-                                .padding(4.dp)
+                                .fillMaxWidth()
+                                .offset(x = -10.dp),
+                            horizontalArrangement = Arrangement.End
                         ) {
-                            Image(
-                                painter = painterResource(id = R.drawable.porto),
-                                contentDescription = "",
-                                contentScale = ContentScale.Crop,
-                                modifier = Modifier
-                                    .height(100.dp)
-                                    .fillMaxWidth()
-                                    .clip(RoundedCornerShape(8.dp))
-                            )
-                            Spacer(modifier = Modifier.height(5.dp))
                             Text(
-                                text = "Porto, 2022",
-                                color = Color(0xFFCF06F0)
+                                text = "${reduzirData(it.dataChegada)} - ${reduzirData(it.dataPartida)}",
+                                color = Color(0xFFCF06F0),
+                                fontSize = 12.sp
                             )
-                            Spacer(modifier = Modifier.height(5.dp))
-                            Text(
-                                text = "Porto is the second city in Portugal, the capital of the Oporto District, and one of the Iberian Peninsula's major urban areas.",
-                                color = Color(0xFFA09C9C),
-                                fontSize = 10.sp
-                            )
-                            Spacer(modifier = Modifier.height(5.dp))
-                            Row(
-                                horizontalArrangement = Arrangement.End,
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                            ) {
-                                Text(
-                                    text = "15 May - 22 May",
-                                    color = Color(0xFFCF06F0),
-                                    fontSize = 10.sp
-                                )
-                            }
                         }
+
+
+
                     }
-                    Spacer(modifier = Modifier.height(14.dp))
+
                 }
             }
         }
+
+
+
     }
 }
+
+
+

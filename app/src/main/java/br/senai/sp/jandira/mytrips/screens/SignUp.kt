@@ -22,10 +22,13 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
@@ -33,11 +36,36 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import br.senai.sp.jandira.mytrips.R
+import br.senai.sp.jandira.mytrips.model.Usuario
+import br.senai.sp.jandira.mytrips.repository.UsuarioRepositorio
 import br.senai.sp.jandira.mytrips.ui.theme.MyTripsTheme
 
 @Composable
 
 fun TelaSignUp(controleDeNavegacao: NavHostController) {
+
+    var usernameState = remember{
+        mutableStateOf("")
+    }
+    var emailState = remember{
+        mutableStateOf("")
+    }
+
+    var phoneState = remember{
+        mutableStateOf("")
+    }
+
+    var passwordState = remember{
+        mutableStateOf("")
+    }
+
+    var mais18State = remember{
+        mutableStateOf(false)
+    }
+
+
+    val cr = UsuarioRepositorio(LocalContext.current)
+
     Column (
         verticalArrangement = Arrangement.SpaceBetween,
         modifier = Modifier
@@ -87,8 +115,10 @@ fun TelaSignUp(controleDeNavegacao: NavHostController) {
                         .height(80.dp)
                 )
                 OutlinedTextField(
-                    value = "Susanna Hoffs",
-                    onValueChange = {},
+                    value = usernameState.value,
+                    onValueChange = {
+                                    usernameState.value = it
+                    },
                     label = {
                         Text(text = "Username")
                     },
@@ -115,8 +145,10 @@ fun TelaSignUp(controleDeNavegacao: NavHostController) {
 
                 )
                 OutlinedTextField(
-                    value = "99999-0987",
-                    onValueChange = {},
+                    value = phoneState.value,
+                    onValueChange = {
+                                    phoneState.value = it
+                    },
                     label = {
                         Text(text = "Phone")
                     },
@@ -144,8 +176,10 @@ fun TelaSignUp(controleDeNavegacao: NavHostController) {
                 )
 
                 OutlinedTextField(
-                    value = "susanna@email.com",
-                    onValueChange = {},
+                    value = emailState.value,
+                    onValueChange = {
+                                    emailState.value = it
+                    },
                     label = {
                         Text(text = "E-mail")
                     },
@@ -173,8 +207,11 @@ fun TelaSignUp(controleDeNavegacao: NavHostController) {
                 )
 
                 OutlinedTextField(
-                    value = "*********",
-                    onValueChange = {},
+                    value = passwordState.value,
+                    onValueChange = {
+
+                                    passwordState.value = it
+                    },
                     label = {
                         Text(text = "Password")
                     },
@@ -204,8 +241,10 @@ fun TelaSignUp(controleDeNavegacao: NavHostController) {
             }
             Row (verticalAlignment = Alignment.CenterVertically, modifier = Modifier.padding(7.dp,0.dp)) {
                 Checkbox(
-                    checked = false,
-                    onCheckedChange = {},
+                    checked = mais18State.value,
+                    onCheckedChange = {
+                                      mais18State.value = it
+                    },
                     colors = CheckboxDefaults.colors(
                         uncheckedColor = Color(0xFFA81DCE),
                         checkedColor = Color(0xFFA81DCE)
@@ -216,7 +255,17 @@ fun TelaSignUp(controleDeNavegacao: NavHostController) {
             }
 
             Button(
-                onClick = {controleDeNavegacao.navigate("home")},
+                onClick = {
+                          val usuario = Usuario(
+                              username = usernameState.value,
+                              email = emailState.value,
+                              password = passwordState.value,
+                              phone = phoneState.value
+                          )
+
+                    cr.salvar(usuario)
+                    controleDeNavegacao.navigate("login")
+                          },
                 shape = RoundedCornerShape(12.dp),
                 modifier = Modifier
                     .padding(13.dp, 0.dp)

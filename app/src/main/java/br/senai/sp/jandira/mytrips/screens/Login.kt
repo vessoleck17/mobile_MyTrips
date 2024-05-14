@@ -163,7 +163,9 @@ fun TelaLogin(controleDeNavegacao: NavHostController) {
                 Button(
                     colors = ButtonDefaults.buttonColors(Color(0xFFA81DCE)),
                     onClick = {
-                        if(emailState.value == "teste@email.com" && senhaState.value == "12345678"){
+                        val email = emailState.value
+                        val senha = senhaState.value
+                        if(usua){
                             controleDeNavegacao.navigate("home")
                         }else{
                             erroState.value = true

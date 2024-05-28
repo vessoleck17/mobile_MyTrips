@@ -11,6 +11,6 @@ interface UsuarioDao {
     @Insert
     fun salvar(usuario: Usuario): Long
 
-    @Query("Select * from db_usuarios where email = :email ")
-    fun buscarUsuario (email: String): Usuarios?
+    @Query("Select * from tbl_usuarios where email = :email ")
+    fun buscarUsuario (email: String): Usuario?
 }

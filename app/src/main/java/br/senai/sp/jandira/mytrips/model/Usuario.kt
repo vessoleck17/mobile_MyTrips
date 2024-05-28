@@ -3,8 +3,7 @@ package br.senai.sp.jandira.mytrips.model
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 
-@Entity
-
+@Entity(tableName = "tbl_usuarios")
 data class Usuario(
     @PrimaryKey(autoGenerate = true) val id: Int = 0,
     val username: String = "",

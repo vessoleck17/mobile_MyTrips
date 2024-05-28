@@ -13,8 +13,8 @@ class UsuarioRepositorio (context: Context) {
         return db.salvar(usuario)
     }
 
-    fun verificacao(email: String, senha: String): Boolean {
+    fun verificacao(email: String, senha : String): Boolean {
         val usuario = db.buscarUsuario(email)
-        return usuario != null && usuario.senha == senha
+        return usuario != null && usuario.password == senha
     }
 }

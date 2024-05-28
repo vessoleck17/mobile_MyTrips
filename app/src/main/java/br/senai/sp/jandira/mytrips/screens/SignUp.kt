@@ -64,7 +64,7 @@ fun TelaSignUp(controleDeNavegacao: NavHostController) {
     }
 
 
-    val cr = UsuarioRepositorio(LocalContext.current)
+    var cr = UsuarioRepositorio(LocalContext.current)
 
     Column (
         verticalArrangement = Arrangement.SpaceBetween,
@@ -260,7 +260,8 @@ fun TelaSignUp(controleDeNavegacao: NavHostController) {
                               username = usernameState.value,
                               email = emailState.value,
                               password = passwordState.value,
-                              phone = phoneState.value
+                              phone = phoneState.value,
+                              mais18 = mais18State.value
                           )
 
                     cr.salvar(usuario)

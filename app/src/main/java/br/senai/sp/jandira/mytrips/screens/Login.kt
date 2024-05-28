@@ -38,6 +38,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import br.senai.sp.jandira.mytrips.R
+import br.senai.sp.jandira.mytrips.repository.UsuarioRepositorio
 import br.senai.sp.jandira.mytrips.ui.theme.MyTripsTheme
 
 
@@ -61,7 +62,7 @@ fun TelaLogin(controleDeNavegacao: NavHostController) {
         mutableStateOf("")
     }
 
-    val contexto = LocalContext.current
+    var contaRepository = UsuarioRepositorio(LocalContext.current)
 
     Column(verticalArrangement = Arrangement.SpaceBetween,
         modifier = Modifier.fillMaxSize()) {
@@ -165,7 +166,7 @@ fun TelaLogin(controleDeNavegacao: NavHostController) {
                     onClick = {
                         val email = emailState.value
                         val senha = senhaState.value
-                        if(usua){
+                        if(contaRepository.verificacao(email, senha)){
                             controleDeNavegacao.navigate("home")
                         }else{
                             erroState.value = true
